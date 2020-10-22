@@ -115,7 +115,7 @@ class SuggestClient extends BaseClient
      */
     public function findByIdParty($query, array $data = [])
     {
-        return $this->_findById("bank", $query, $data);
+        return $this->_findById("party", $query, $data);
     }
 
     /**
@@ -131,7 +131,7 @@ class SuggestClient extends BaseClient
      */
     public function findByIdBank($query, array $data = [])
     {
-        return $this->_findById("party", $query, $data);
+        return $this->_findById("bank", $query, $data);
     }
 
     /**
