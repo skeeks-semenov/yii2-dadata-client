@@ -61,7 +61,7 @@ abstract class BaseClient extends Component
     public function _createHttpRequest()
     {
         $client = new Client();
-
+        $client->requestConfig = ['format' => Client::FORMAT_JSON];
 
         $request = $client
             ->createRequest()
@@ -80,30 +80,30 @@ abstract class BaseClient extends Component
     }
 
     /**
-     * @param       $url
-     * @param array $query
+     * @param string $apiMethod
+     * @param array  $query
      * @return array
      * @throws Exception
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
-    public function sendGet($url, array $query = [])
+    public function sendGet(string $apiMethod, array $query = [])
     {
-        $url = $this->baseUrl . "." . $url;
+        $url = $this->baseUrl.$apiMethod;
         return $this->send($url, $query, "GET");
     }
 
     /**
-     * @param       $url
-     * @param array $data
+     * @param string $apiMethod
+     * @param array  $data
      * @return array
      * @throws Exception
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
-    public function sendPost($url, array $data = [])
+    public function sendPost(string $apiMethod, array $data = [])
     {
-        $url = $this->baseUrl . "." . $url;
+        $url = $this->baseUrl.$apiMethod;
         return $this->send($url, $data);
     }
 
@@ -128,7 +128,10 @@ abstract class BaseClient extends Component
             return (array)$httpResponse->data;
         }
 
-        throw new Exception("Ошибка: ".$this->_getMessageByStatusCode($httpResponse->statusCode));
+        if (!$message = $this->_getMessageByStatusCode($httpResponse->statusCode)) {
+            $message = $httpResponse->content;
+        }
+        throw new Exception("Ошибка: ".$message);
     }
 
 
@@ -155,6 +158,6 @@ abstract class BaseClient extends Component
      */
     public function _getMessageByStatusCode($httpStatusCode)
     {
-        return (string)ArrayHelper::getValue(static::$errorStatuses, (string)$httpStatusCode);
+        return (string)ArrayHelper::getValue(static::$errorStatuses, (string)$httpStatusCode, $httpStatusCode);
     }
 }

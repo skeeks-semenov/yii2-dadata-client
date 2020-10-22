@@ -18,14 +18,60 @@ class CleanClient extends BaseClient
      */
     public $baseUrl = "https://cleaner.dadata.ru/api/v1/";
 
-    public function clean($name, $value)
+    /**
+     * API стандартизации ФИО
+     * @see https://dadata.ru/api/clean/name/
+     *
+     * @param string $value
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    public function name(string $value)
+    {
+        return $this->_clean("name", $value);
+    }
+
+    /**
+     * API стандартизации паспортов
+     * @see https://dadata.ru/api/clean/passport/
+     *
+     * @param string $value
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    public function passport(string $value)
+    {
+        return $this->_clean("passport", $value);
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    public function _clean(string $name, string $value)
     {
         $url = "clean/$name";
         $fields = [$value];
         $response = $this->sendPost($url, $fields);
-        return $response[0];
+        return (array) $response[0];
     }
 
+    /**
+     * @param $structure
+     * @param $record
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
     public function cleanRecord($structure, $record)
     {
         $url = "clean";
@@ -34,6 +80,6 @@ class CleanClient extends BaseClient
             "data"      => [$record],
         ];
         $response = $this->sendPost($url, $data);
-        return $response["data"][0];
+        return (array) $response["data"][0];
     }
 }

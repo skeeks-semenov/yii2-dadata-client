@@ -18,13 +18,32 @@ class ProfileClient extends BaseClient
      */
     public $baseUrl = "https://dadata.ru/api/v2/";
 
+    /**
+     * Баланс пользователя
+     * @see https://dadata.ru/api/balance/
+     *
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
     public function getBalance()
     {
         $url = "profile/balance";
         $response = $this->sendGet($url);
-        return $response["balance"];
+        return (array) $response["balance"];
     }
 
+    /**
+     * Статистика использования
+     * @see https://dadata.ru/api/stat/
+     *
+     * @param null $date
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
     public function getDailyStats($date = null)
     {
         $url = "stat/daily";
@@ -33,13 +52,22 @@ class ProfileClient extends BaseClient
         }
         $query = ["date" => $date->format("Y-m-d")];
         $response = $this->sendGet($url, $query);
-        return $response;
+        return (array) $response;
     }
 
+    /**
+     * Даты актуальности справочников
+     * @see https://dadata.ru/api/version/
+     *
+     * @return array
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
     public function getVersions()
     {
         $url = "version";
         $response = $this->sendGet($url);
-        return $response;
+        return (array) $response;
     }
 }
