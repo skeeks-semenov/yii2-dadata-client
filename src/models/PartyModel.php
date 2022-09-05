@@ -249,6 +249,11 @@ class PartyModel extends Model
      */
     public function getAddress()
     {
-        return new AddressModel((array) $this->getDataValue("address"));
+        $data = [];
+        $data['value'] = $this->getDataValue("address.value");
+        $data['unrestricted_value'] = $this->getDataValue("address.unrestricted_value");
+        $data['data'] = (array) $this->getDataValue("address.data");
+
+        return new AddressModel((array) $data);
     }
 }
